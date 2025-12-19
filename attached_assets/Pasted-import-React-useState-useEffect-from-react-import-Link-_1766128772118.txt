@@ -1,0 +1,274 @@
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { createPageUrl } from "@/utils";
+import { User } from "@/entities/User";
+import { 
+  Menu, X, Search, User as UserIcon, Crown, Zap, 
+  Brain, GraduationCap, Heart, DollarSign, ShoppingCart,
+  MapPin, Briefcase, Film, Users
+} from "lucide-react";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarHeader,
+  SidebarFooter,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+
+const domains = [
+  { name: "Technology & AI", path: "Technology", icon: Brain, color: "bg-blue-500" },
+  { name: "Education", path: "Education", icon: GraduationCap, color: "bg-purple-500" },
+  { name: "Health & Wellness", path: "Health", icon: Heart, color: "bg-red-500" },
+  { name: "Finance", path: "Finance", icon: DollarSign, color: "bg-green-500" },
+  { name: "E-Commerce", path: "ECommerce", icon: ShoppingCart, color: "bg-orange-500" },
+  { name: "Travel", path: "Travel", icon: MapPin, color: "bg-teal-500" },
+  { name: "Business", path: "Business", icon: Briefcase, color: "bg-indigo-500" },
+  { name: "Entertainment", path: "Entertainment", icon: Film, color: "bg-pink-500" },
+  { name: "Jobs & Freelancing", path: "Jobs", icon: Users, color: "bg-yellow-500" }
+];
+
+export default function Layout({ children, currentPageName }) {
+  const location = useLocation();
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    loadUser();
+  }, []);
+
+  const loadUser = async () => {
+    try {
+      const userData = await User.me();
+      setUser(userData);
+    } catch (error) {
+      setUser(null);
+    }
+    setIsLoading(false);
+  };
+
+  const handleLogin = async () => {
+    try {
+      await User.loginWithRedirect(window.location.origin + createPageUrl("Dashboard"));
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
+
+  const handleLogout = async () => {
+    await User.logout();
+    setUser(null);
+  };
+
+  return (
+    <SidebarProvider>
+      <style>{`
+        :root {
+          --primary: #0066FF;
+          --secondary: #FF0066;
+          --accent: #66FF00;
+          --warning: #FF6600;
+          --background: #FAFAFA;
+          --text: #000000;
+          --border: #000000;
+        }
+        
+        * {
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .neo-brutalism {
+          border: 4px solid var(--border);
+          box-shadow: 8px 8px 0px var(--border);
+          background: white;
+        }
+        
+        .neo-button {
+          border: 4px solid var(--border);
+          box-shadow: 4px 4px 0px var(--border);
+          transition: all 0.1s ease;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+        }
+        
+        .neo-button:hover {
+          transform: translate(2px, 2px);
+          box-shadow: 2px 2px 0px var(--border);
+        }
+        
+        .neo-button:active {
+          transform: translate(4px, 4px);
+          box-shadow: 0px 0px 0px var(--border);
+        }
+        
+        .domain-card {
+          border: 4px solid var(--border);
+          box-shadow: 6px 6px 0px var(--border);
+          transform: rotate(-1deg);
+          transition: all 0.2s ease;
+        }
+        
+        .domain-card:hover {
+          transform: rotate(0deg) scale(1.02);
+          box-shadow: 10px 10px 0px var(--border);
+        }
+      `}</style>
+      
+      <div className="min-h-screen flex w-full" style={{ backgroundColor: 'var(--background)' }}>
+        <Sidebar className="border-r-4 border-black neo-brutalism rounded-none">
+          <SidebarHeader className="border-b-4 border-black p-6">
+            <Link to={createPageUrl("Home")} className="group">
+              <div className="flex items-center gap-3">
+                <img 
+                  src="https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3--8080--365214aa.local-credentialless.webcontainer-api.io/src/assets/kslogo.png"
+                  alt="GuideSoft Logo"
+                  className="w-12 h-12 object-contain border-4 border-black transform rotate-3 group-hover:rotate-0 group-hover:scale-110 transition-all"
+                />
+                <div>
+                  <h2 className="font-black text-xl tracking-tight" style={{ color: 'var(--text)' }}>
+                    GuideSoft
+                  </h2>
+                  <p className="text-xs font-bold uppercase tracking-widest text-gray-600">
+                    Nine Worlds Hub
+                  </p>
+                </div>
+              </div>
+            </Link>
+          </SidebarHeader>
+          
+          <SidebarContent className="p-4">
+            <SidebarGroup>
+              <SidebarGroupContent>
+                <SidebarMenu className="space-y-2">
+                  <SidebarMenuItem>
+                    <SidebarMenuButton 
+                      asChild 
+                      className={`neo-button p-3 ${location.pathname === createPageUrl("Home") ? 'bg-blue-500 text-white' : 'bg-white'}`}
+                    >
+                      <Link to={createPageUrl("Home")} className="flex items-center gap-3">
+                        <Menu className="w-5 h-5" />
+                        <span className="font-black">HOME HUB</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  
+                  {user && (
+                    <SidebarMenuItem>
+                      <SidebarMenuButton 
+                        asChild 
+                        className={`neo-button p-3 ${location.pathname === createPageUrl("Dashboard") ? 'bg-purple-500 text-white' : 'bg-white'}`}
+                      >
+                        <Link to={createPageUrl("Dashboard")} className="flex items-center gap-3">
+                          <UserIcon className="w-5 h-5" />
+                          <span className="font-black">DASHBOARD</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  )}
+                  
+                  <div className="my-4 border-t-4 border-black"></div>
+                  
+                  {domains.map((domain) => (
+                    <SidebarMenuItem key={domain.path}>
+                      <SidebarMenuButton 
+                        asChild 
+                        className={`neo-button p-2 text-xs ${
+                          location.pathname === createPageUrl(domain.path) 
+                            ? `${domain.color} text-white` 
+                            : 'bg-white'
+                        }`}
+                      >
+                        <Link to={createPageUrl(domain.path)} className="flex items-center gap-2">
+                          <domain.icon className="w-4 h-4" />
+                          <span className="font-black uppercase text-[10px] leading-tight">
+                            {domain.name.split(' ')[0]}
+                          </span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </SidebarContent>
+
+          <SidebarFooter className="border-t-4 border-black p-4">
+            {!isLoading && (
+              <>
+                {user ? (
+                  <div className="space-y-3">
+                    <div className="neo-brutalism p-3 bg-white">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-6 h-6 bg-green-500 rounded-full border-2 border-black flex items-center justify-center">
+                          <span className="text-white font-black text-xs">
+                            {user.full_name?.[0] || 'U'}
+                          </span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-black text-xs truncate uppercase">
+                            {user.full_name || 'User'}
+                          </p>
+                          <p className="text-[10px] font-bold text-gray-600 uppercase">
+                            {user.subscription_type === 'premium' ? (
+                              <span className="flex items-center gap-1 text-yellow-600">
+                                <Crown className="w-3 h-3" /> PREMIUM
+                              </span>
+                            ) : (
+                              'FREE TIER'
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-center">
+                        <span className="text-xs font-black text-blue-500">
+                          {user.points || 0} POINTS
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="neo-button w-full p-2 bg-red-500 text-white font-black text-xs uppercase"
+                    >
+                      LOGOUT
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={handleLogin}
+                    className="neo-button w-full p-3 bg-blue-500 text-white font-black text-sm uppercase"
+                  >
+                    JOIN NOW - ₹200
+                  </button>
+                )}
+              </>
+            )}
+          </SidebarFooter>
+        </Sidebar>
+
+        <main className="flex-1 flex flex-col">
+          <header className="bg-white border-b-4 border-black p-4 md:hidden">
+            <div className="flex items-center gap-4">
+              <SidebarTrigger className="neo-button p-2 bg-white" />
+              <img 
+                src="https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3--8080--365214aa.local-credentialless.webcontainer-api.io/src/assets/kslogo.png"
+                alt="GuideSoft Logo"
+                className="w-8 h-8 object-contain border-2 border-black"
+              />
+              <h1 className="text-lg font-black uppercase tracking-wide">GuideSoft</h1>
+            </div>
+          </header>
+
+          <div className="flex-1 overflow-auto">
+            {children}
+          </div>
+        </main>
+      </div>
+    </SidebarProvider>
+  );
+}
