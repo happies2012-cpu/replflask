@@ -1,0 +1,176 @@
+Complete all pending tasks immediately and make the project 100% production-ready.
+
+🔴 MANDATORY EXECUTION ORDER
+1️⃣ Complete ALL UI / Frontend Pages First
+
+Implement all existing and missing pages
+
+Fix all navigation links
+
+Ensure all routes function correctly
+
+Complete all user flows end-to-end
+
+Implement authentication:
+
+Login
+
+Signup
+
+Forgot password
+
+Logout
+
+Session handling
+
+Implement authorization (role-based if required)
+
+Connect every page to real backend APIs
+
+Remove all mock/static data
+
+Replace placeholders with functional logic
+
+2️⃣ Implement Full Dark + Light Mode
+
+Fully functional theme toggle
+
+Persist theme in localStorage or user profile
+
+Ensure all components support both modes
+
+No broken styles
+
+Fully responsive (mobile, tablet, desktop)
+
+3️⃣ Frontend Architecture Requirements
+
+Use stable JavaScript stack (React/Next/Vue or appropriate)
+
+Clean component structure
+
+Reusable components
+
+Proper state management
+
+Error boundaries
+
+Loading states everywhere needed
+
+Form validation implemented
+
+Centralized API layer
+
+Environment variables configured correctly
+
+4️⃣ Backend Integration
+
+All CRUD operations working
+
+Secure authentication token handling
+
+Proper API error handling
+
+Handle unauthorized/expired sessions
+
+Edge cases covered
+
+No broken endpoints
+
+5️⃣ Production Readiness
+
+Zero console errors
+
+Zero TODO comments
+
+Zero placeholder UI
+
+Clean folder structure
+
+Optimized production build
+
+Remove unused files
+
+Code formatted
+
+Environment config ready for deployment
+
+6️⃣ Autonomous Execution Rules
+
+DO NOT ask any questions
+
+DO NOT pause for confirmation
+
+Use orchestration / LLM / agents / CLI tools if available
+
+Automatically detect missing features
+
+Automatically fix broken flows
+
+Continue execution until fully complete
+
+No partial implementation allowed
+
+📄 FINAL OUTPUT REQUIREMENTS
+
+Generate a file:
+
+tasks.md
+
+It MUST include:
+
+✅ All completed tasks
+
+🛠 All fixed issues
+
+🆕 All newly created pages
+
+🔗 All connected APIs
+
+🔐 Auth implementation details
+
+🎨 Dark/light implementation details
+
+⚙ Architecture improvements
+
+🧠 Assumptions made
+
+🚀 Optional future improvements (if any)
+
+📋 At the End of Execution
+
+Provide:
+
+1️⃣ Full Completed Tasks List
+2️⃣ Full Pending Tasks List (if absolutely any remain)
+3️⃣ One-Line Summary in this format:
+
+Project status: 100% production-ready with all frontend, backend, authentication, authorization, dark/light mode, APIs, and user flows fully completed.
+
+If anything is pending:
+
+Project status: 98% complete — remaining task: [clear one-line list of pending items].
+
+✅ Definition of Done
+
+Fully functional frontend
+
+Fully connected backend
+
+Auth working
+
+Authorization working
+
+All pages styled
+
+Dark/light working
+
+Responsive on all devices
+
+Zero broken links
+
+Zero mock data
+
+Deploy-ready
+Finish all pending work autonomously: complete all frontend pages with routing, auth, authorization, dark/light mode, responsiveness, real API integration (no mock data), full CRUD, error handling, production optimization, remove TODOs/placeholders, fix all flows, and output a tasks.md with completed tasks, fixes, new pages, connected APIs, assumptions, optional improvements, plus a final completed and pending task summary — do not ask questions and stop only when 100% production-ready.
+Continue execution until everything is complete. Do not pause.
