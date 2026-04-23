@@ -64,7 +64,12 @@ const ToastProvider = ({ children }) => {
 const ThemeCtx = createContext(null);
 const useTheme = () => useContext(ThemeCtx);
 const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState(() => localStorage.getItem('gs_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+  const [theme, setTheme] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    const override = params.get('theme');
+    if (override === 'dark' || override === 'light') return override;
+    return localStorage.getItem('gs_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  });
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
     localStorage.setItem('gs_theme', theme);
@@ -206,10 +211,10 @@ const Sidebar = ({ open, setOpen }) => {
   return (
     <>
       {open && <div className="lg:hidden fixed inset-0 bg-black/50 z-30" onClick={() => setOpen(false)} />}
-      <aside className={`fixed lg:sticky top-0 left-0 h-screen w-72 z-40 transform transition-transform glass border-r-4 border-zinc-900 dark:border-zinc-100 flex flex-col ${open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-        <div className="p-5 border-b-4 border-zinc-900 dark:border-zinc-100">
+      <aside className={`fixed lg:sticky top-0 left-0 h-screen w-72 z-40 transform transition-transform duration-300 glass border-r border-white/40 dark:border-white/10 flex flex-col ${open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+        <div className="p-5 border-b border-white/40 dark:border-white/10">
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-pink-500 flex items-center justify-center text-white font-black text-2xl border-3 border-zinc-900 dark:border-zinc-100 transform group-hover:rotate-6 transition-transform">G</div>
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 via-fuchsia-500 to-pink-500 flex items-center justify-center text-white font-black text-2xl shadow-lg shadow-fuchsia-500/40 transform group-hover:rotate-6 group-hover:scale-110 transition-all">G</div>
             <div>
               <h2 className="font-black text-xl tracking-tight">GuideSoft</h2>
               <p className="text-[10px] font-bold uppercase tracking-widest opacity-70">Nine Worlds Hub</p>
@@ -220,47 +225,49 @@ const Sidebar = ({ open, setOpen }) => {
         <div className="flex-1 overflow-y-auto p-4 space-y-2">
           {navItems.map((n) => (
             <Link key={n.to} to={n.to} onClick={() => setOpen(false)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg font-bold text-sm uppercase transition-all ${
-                isActive(n.to) ? `${colorMap[n.color].bg} text-white shadow-lg` : 'hover:bg-zinc-200 dark:hover:bg-zinc-800'
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-sm uppercase transition-all duration-200 ${
+                isActive(n.to)
+                  ? `${colorMap[n.color].bg} text-white shadow-lg shadow-${n.color}-500/30 scale-[1.02]`
+                  : 'hover:bg-white/60 dark:hover:bg-white/5 hover:translate-x-1'
               }`}>
               {React.createElement(I[n.icon] || I.menu, { className: 'w-4 h-4' })}
               {n.label}
             </Link>
           ))}
 
-          <div className="pt-3 mt-3 border-t-2 border-zinc-300 dark:border-zinc-700">
+          <div className="pt-3 mt-3 border-t border-white/40 dark:border-white/10">
             <p className="px-3 mb-2 text-[10px] font-black uppercase tracking-widest opacity-60">Domains</p>
             {DOMAINS.map((d) => (
               <Link key={d.slug} to={d.path} onClick={() => setOpen(false)}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold uppercase hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors">
-                <span className={`w-2 h-2 rounded-full ${colorMap[d.color].bg}`}></span>
+                className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold uppercase hover:bg-white/60 dark:hover:bg-white/5 hover:translate-x-1 transition-all duration-200">
+                <span className={`w-2 h-2 rounded-full ${colorMap[d.color].bg} shadow-md shadow-${d.color}-500/50`}></span>
                 <span className="truncate">{d.name}</span>
               </Link>
             ))}
           </div>
         </div>
 
-        <div className="p-4 border-t-4 border-zinc-900 dark:border-zinc-100">
+        <div className="p-4 border-t border-white/40 dark:border-white/10">
           {user ? (
             <div className="space-y-2">
-              <div className="flex items-center gap-2 p-2 rounded-lg bg-zinc-100 dark:bg-zinc-800">
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-black text-sm">
+              <div className="flex items-center gap-2.5 p-2.5 rounded-xl glass-soft">
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-fuchsia-500 flex items-center justify-center text-white font-black text-sm shadow-md">
                   {(user.full_name || user.username || 'U')[0].toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-bold text-xs truncate">{user.full_name || user.username}</p>
                   <p className="text-[10px] opacity-70 flex items-center gap-1">
-                    {user.subscription_type === 'premium' ? <><I.crown className="w-3 h-3" /> Premium</> : 'Free'}
-                    <span className="ml-auto text-blue-500 font-bold">{user.points || 0} pts</span>
+                    {user.subscription_type === 'premium' ? <><I.crown className="w-3 h-3 text-amber-500" /> Premium</> : 'Free'}
+                    <span className="ml-auto text-indigo-500 font-bold">{user.points || 0} pts</span>
                   </p>
                 </div>
               </div>
-              <button onClick={logout} className="w-full px-3 py-2 rounded-lg bg-red-500 text-white font-bold text-xs uppercase hover:bg-red-600 transition-colors">
+              <button onClick={logout} className="w-full px-3 py-2 rounded-xl bg-gradient-to-r from-red-500 to-rose-600 text-white font-bold text-xs uppercase shadow-md shadow-red-500/20 hover:shadow-lg hover:shadow-red-500/40 transition-all">
                 Logout
               </button>
             </div>
           ) : (
-            <button onClick={login} className="w-full px-3 py-3 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white font-black text-sm uppercase hover:opacity-90 transition-opacity">
+            <button onClick={login} className="w-full px-3 py-3 rounded-xl bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-pink-500 text-white font-black text-sm uppercase shadow-lg shadow-fuchsia-500/40 hover:shadow-xl hover:shadow-fuchsia-500/60 hover:-translate-y-0.5 transition-all">
               Sign In Free
             </button>
           )}
@@ -285,35 +292,35 @@ const TopBar = ({ onMenu }) => {
   const submit = (e) => { e.preventDefault(); if (q.trim()) navigate(`/search?q=${encodeURIComponent(q)}`); };
 
   return (
-    <header className="sticky top-0 z-20 glass border-b-4 border-zinc-900 dark:border-zinc-100 px-4 py-3 flex items-center gap-3">
-      <button onClick={onMenu} className="lg:hidden p-2 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800">
+    <header className="sticky top-0 z-20 glass border-b border-white/40 dark:border-white/10 px-4 py-3 flex items-center gap-3">
+      <button onClick={onMenu} className="lg:hidden p-2 rounded-xl hover:bg-white/60 dark:hover:bg-white/10 transition-colors">
         <I.menu className="w-5 h-5" />
       </button>
       <form onSubmit={submit} className="flex-1 max-w-xl">
         <div className="relative">
-          <I.search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 opacity-60" />
+          <I.search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 opacity-60 pointer-events-none" />
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search content, jobs, organizations..."
-            className="w-full pl-10 pr-4 py-2 rounded-lg bg-white dark:bg-zinc-900 border-2 border-zinc-300 dark:border-zinc-700 font-medium text-sm focus:border-blue-500" />
+            className="!pl-10 !pr-4 !py-2.5 !rounded-xl text-sm" />
         </div>
       </form>
-      <button onClick={toggle} className="p-2 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800" title="Toggle theme">
-        {theme === 'dark' ? <I.sun className="w-5 h-5" /> : <I.moon className="w-5 h-5" />}
+      <button onClick={toggle} className="p-2.5 rounded-xl hover:bg-white/60 dark:hover:bg-white/10 transition-all hover:rotate-12" title="Toggle theme">
+        {theme === 'dark' ? <I.sun className="w-5 h-5 text-amber-400" /> : <I.moon className="w-5 h-5 text-indigo-500" />}
       </button>
       {user && (
         <div className="relative">
-          <button onClick={() => setShowNotifs(s => !s)} className="p-2 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800 relative">
+          <button onClick={() => setShowNotifs(s => !s)} className="p-2.5 rounded-xl hover:bg-white/60 dark:hover:bg-white/10 transition-colors relative">
             <I.bell className="w-5 h-5" />
             {notifs.filter(n => !n.is_read).length > 0 && (
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-gradient-to-br from-red-500 to-pink-500 rounded-full ring-2 ring-white dark:ring-zinc-900 animate-pulse"></span>
             )}
           </button>
           {showNotifs && (
-            <div className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto glass rounded-lg border-2 border-zinc-900 dark:border-zinc-100 shadow-2xl">
-              <div className="p-3 border-b-2 border-zinc-300 dark:border-zinc-700 font-bold text-sm">Notifications</div>
+            <div className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto glass-strong rounded-2xl shadow-2xl animate-fadeInUp">
+              <div className="p-3 border-b border-white/40 dark:border-white/10 font-bold text-sm flex items-center gap-2"><I.bell className="w-4 h-4" /> Notifications</div>
               {notifs.length === 0 ? (
                 <p className="p-6 text-center text-sm opacity-60">No notifications</p>
               ) : notifs.map(n => (
-                <div key={n.id} className={`p-3 border-b border-zinc-200 dark:border-zinc-800 ${!n.is_read ? 'bg-blue-50 dark:bg-blue-950/30' : ''}`}>
+                <div key={n.id} className={`p-3 border-b border-white/30 dark:border-white/5 ${!n.is_read ? 'bg-indigo-500/10' : ''}`}>
                   <p className="font-bold text-xs">{n.title}</p>
                   <p className="text-xs opacity-70">{n.message}</p>
                   <p className="text-[10px] opacity-50 mt-1">{timeAgo(n.created_at)}</p>
@@ -329,39 +336,40 @@ const TopBar = ({ onMenu }) => {
 
 // ─── Reusable Components ────────────────────────────────────────────────────
 
-const Card = ({ children, className = '', ...p }) => (
-  <div className={`bg-white dark:bg-zinc-900 rounded-xl border-2 border-zinc-200 dark:border-zinc-800 ${className}`} {...p}>{children}</div>
+const Card = ({ children, className = '', glass = true, hover = false, ...p }) => (
+  <div className={`${glass ? 'glass' : 'bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800'} ${hover ? 'card-hover' : ''} rounded-2xl ${className}`} {...p}>{children}</div>
 );
 const Button = ({ children, variant = 'primary', size = 'md', className = '', ...p }) => {
   const sizes = { sm: 'px-3 py-1.5 text-xs', md: 'px-4 py-2 text-sm', lg: 'px-6 py-3 text-base' };
   const variants = {
-    primary: 'bg-blue-500 hover:bg-blue-600 text-white',
-    secondary: 'bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700',
-    danger: 'bg-red-500 hover:bg-red-600 text-white',
-    success: 'bg-green-500 hover:bg-green-600 text-white',
-    ghost: 'hover:bg-zinc-200 dark:hover:bg-zinc-800',
-    gradient: 'bg-gradient-to-r from-blue-500 to-purple-600 hover:opacity-90 text-white',
+    primary: 'bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white shadow-lg shadow-indigo-500/30',
+    secondary: 'glass-soft hover:bg-white/70 dark:hover:bg-white/10 text-zinc-900 dark:text-zinc-100',
+    danger: 'bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white shadow-lg shadow-red-500/30',
+    success: 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg shadow-emerald-500/30',
+    ghost: 'hover:bg-zinc-900/5 dark:hover:bg-white/10 text-zinc-900 dark:text-zinc-100',
+    gradient: 'bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-pink-500 hover:opacity-95 text-white shadow-lg shadow-fuchsia-500/30',
+    outline: 'border-2 border-zinc-900 dark:border-white/40 hover:bg-zinc-900 hover:text-white dark:hover:bg-white dark:hover:text-zinc-900 text-zinc-900 dark:text-white',
   };
-  return <button className={`${sizes[size]} ${variants[variant]} rounded-lg font-bold uppercase tracking-wide transition-all ${className}`} {...p}>{children}</button>;
+  return <button className={`${sizes[size]} ${variants[variant]} rounded-xl font-bold uppercase tracking-wide transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${className}`} {...p}>{children}</button>;
 };
 const Input = ({ className = '', ...p }) => (
-  <input className={`w-full px-3 py-2 rounded-lg bg-white dark:bg-zinc-900 border-2 border-zinc-300 dark:border-zinc-700 text-sm font-medium ${className}`} {...p} />
+  <input className={`text-sm font-medium ${className}`} {...p} />
 );
 const Textarea = ({ className = '', ...p }) => (
-  <textarea className={`w-full px-3 py-2 rounded-lg bg-white dark:bg-zinc-900 border-2 border-zinc-300 dark:border-zinc-700 text-sm ${className}`} {...p} />
+  <textarea className={`text-sm ${className}`} rows={3} {...p} />
 );
 const Select = ({ className = '', children, ...p }) => (
-  <select className={`w-full px-3 py-2 rounded-lg bg-white dark:bg-zinc-900 border-2 border-zinc-300 dark:border-zinc-700 text-sm font-medium ${className}`} {...p}>{children}</select>
+  <select className={`text-sm font-medium ${className}`} {...p}>{children}</select>
 );
-const Label = ({ children }) => <label className="block text-xs font-bold uppercase tracking-wide mb-1">{children}</label>;
+const Label = ({ children }) => <label className="block text-[10px] font-black uppercase tracking-widest mb-1.5 text-zinc-600 dark:text-zinc-400">{children}</label>;
 const Modal = ({ open, onClose, title, children }) => {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" onClick={onClose}>
-      <div className="bg-white dark:bg-zinc-900 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-zinc-900 dark:border-zinc-100" onClick={(e) => e.stopPropagation()}>
-        <div className="p-4 border-b-2 border-zinc-200 dark:border-zinc-800 flex items-center justify-between sticky top-0 bg-white dark:bg-zinc-900">
-          <h2 className="text-lg font-black uppercase">{title}</h2>
-          <button onClick={onClose} className="p-1 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800"><I.x className="w-5 h-5" /></button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeInUp" onClick={onClose} style={{ animationDuration: '0.25s' }}>
+      <div className="glass-strong rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        <div className="p-5 border-b border-white/30 dark:border-white/10 flex items-center justify-between sticky top-0 glass-strong z-10 rounded-t-2xl">
+          <h2 className="text-lg font-black tracking-tight">{title}</h2>
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-zinc-900/10 dark:hover:bg-white/10 transition-colors"><I.x className="w-5 h-5" /></button>
         </div>
         <div className="p-4">{children}</div>
       </div>
@@ -410,13 +418,15 @@ const HomePage = () => {
   return (
     <div className="space-y-12">
       {/* Hero */}
-      <section className="relative overflow-hidden rounded-3xl gradient-mesh p-8 md:p-16 border-4 border-zinc-900 dark:border-zinc-100">
+      <section className="relative overflow-hidden rounded-3xl gradient-mesh p-8 md:p-16 glass-strong">
+        <div aria-hidden className="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-fuchsia-400/40 blur-3xl animate-blob"></div>
+        <div aria-hidden className="absolute -bottom-32 -left-20 w-96 h-96 rounded-full bg-indigo-400/40 blur-3xl animate-blob" style={{ animationDelay: '4s' }}></div>
         <div className="relative z-10 max-w-4xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur border-2 border-zinc-900 dark:border-zinc-100 text-xs font-black uppercase mb-6 animate-fadeInUp">
-            <I.spark className="w-3 h-3" /> 2026 Edition
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-strong text-xs font-black uppercase tracking-widest mb-6 animate-fadeInUp chip-glow">
+            <I.spark className="w-3 h-3 text-amber-500" /> 2026 Edition · Nine Worlds Hub
           </div>
-          <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-6 animate-fadeInUp" style={{ animationDelay: '0.1s' }}>
-            One hub. <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Nine worlds.</span> Endless possibilities.
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-6 animate-fadeInUp leading-[0.95]" style={{ animationDelay: '0.1s' }}>
+            One hub.<br /><span className="text-gradient">Nine worlds.</span><br />Endless possibilities.
           </h1>
           <p className="text-lg md:text-xl opacity-80 mb-8 max-w-2xl animate-fadeInUp" style={{ animationDelay: '0.2s' }}>
             GuideSoft connects technology, education, finance, jobs, and more into one premium platform built for the modern professional.

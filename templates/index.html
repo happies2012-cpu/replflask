@@ -17,6 +17,9 @@
 <script>
   // Boot theme before render
   (function() {
+    const params = new URLSearchParams(window.location.search);
+    const override = params.get('theme');
+    if (override) localStorage.setItem('gs_theme', override);
     const t = localStorage.getItem('gs_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     if (t === 'dark') document.documentElement.classList.add('dark');
   })();

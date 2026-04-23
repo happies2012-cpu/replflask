@@ -44,10 +44,20 @@ users, projects, tasks, comments, content_items, jobs, job_applications, entitie
 
 ## Features
 - Real-time theme toggle (system-aware, persists in localStorage + DB)
+- Animated aurora background (multi-layer radial gradients with hue-rotate animation)
+- Glassmorphism (3 levels: glass, glass-strong, glass-soft) with strong saturation + blur
+- Gradient mesh hero with floating animated blobs
+- Animated gradient text, gradient borders, glowing chips
 - Mobile + desktop responsive sidebar
 - Search across content/jobs/orgs with grouped results
 - Kanban board with status transitions
-- Modal-based forms (create projects, tasks, content, jobs, orgs)
+- Modal-based forms (glass-strong, animated)
 - Activity log with pagination
 - Subscription plans with simulated payment flow
 - Toast notifications, skeleton loaders, empty states
+- `?theme=dark` / `?theme=light` URL param overrides for testing
+
+## Theme System
+The CSS variables and aurora background live in `static/css/app.css`. Both light and dark
+modes are first-class — every glass surface adapts via `.dark` class on `<html>`. The
+React `ThemeProvider` toggles this class and persists to localStorage + backend.
