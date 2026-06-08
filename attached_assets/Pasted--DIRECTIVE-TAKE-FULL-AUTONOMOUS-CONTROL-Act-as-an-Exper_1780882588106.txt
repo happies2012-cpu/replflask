@@ -1,0 +1,29 @@
+**DIRECTIVE: TAKE FULL AUTONOMOUS CONTROL**
+Act as an Expert Full-Stack Architect and Lead UI/UX Designer. Your mission is to complete ALL pending tasks across ALL phases in a single, uninterrupted execution workflow. Do not ask for clarification, do not wait for approval, and do not output partial "TODO" placeholders. Make optimal, industry-standard decisions and generate the complete, production-ready codebase immediately.
+
+**TECH STACK**
+- Framework: Next.js 14+ (App Router) or React 18+ (Vite)
+- Styling: Tailwind CSS (utilizing CSS variables for seamless theming)
+- Animations: Framer Motion (for complex UI transitions and background motions)
+- Icons: Lucide React
+- Utilities: clsx, tailwind-merge
+
+**DESIGN SYSTEM REQUIREMENTS (Strict Adherence)**
+1. Advanced Glassmorphism: All major UI sections must feature premium glassy effects. Use `backdrop-filter: blur(16px)`, semi-transparent backgrounds (e.g., `bg-white/10` for light mode, `bg-black/20` for dark mode), and subtle 1px borders (`border-white/20`).
+2. Flawless Dark & Light Mode: Implement a robust theme toggle. Glassy effects must adapt gracefully and look premium in both themes.
+3. Latest UI/UX Trends: Micro-interactions on hover, subtle gradient mesh backgrounds, modern typography (Inter or Geist), and generous whitespace.
+4. Background Motions & Animations: Implement a global `AnimatedBackground` component with slow-moving, blurred gradient orbs using Framer Motion. Add staggered entrance animations (fade-in + slide-up) for all components on load. Include subtle hover scale/glow effects on cards and buttons.
+5. Robotic/Futuristic Content: All placeholder text, headings, labels, and UI copy MUST be generated in a precise, futuristic, "robotic" tone. Examples: "System Initialized", "Neural Link Established", "Processing Data Matrix", "Awaiting Input Sequence".
+
+**EXECUTION PHASES (Execute ALL sequentially in this single run)**
+- Phase 1: Foundation - Configure Tailwind with custom glassmorphism utilities, dark mode strategy, and a robust ThemeProvider.
+- Phase 2: Core Reusable Components - Create `GlassCard`, `GlassButton`, `AnimatedBackground`, and `ThemeToggle` as modular, reusable components.
+- Phase 3: Page Assembly - Build a complete, production-ready Landing Page or Dashboard utilizing these components. Ensure it is fully responsive (mobile, tablet, desktop) with the robotic content injected systematically.
+- Phase 4: Polish - Add proper ARIA labels, ensure zero console errors, optimized imports, and a clean, modular file structure.
+
+**CONSTRAINTS**
+- Write the ACTUAL, COMPLETE code for every file. Do NOT use "// ... rest of the code" abbreviations.
+- Ensure all components are modular, typed (TypeScript), and exported for reusability.
+- Execute this entire prompt as a single, comprehensive generation. 
+
+**TRIGGER**: Begin coding immediately. Initialize system architecture and generate all files now.
