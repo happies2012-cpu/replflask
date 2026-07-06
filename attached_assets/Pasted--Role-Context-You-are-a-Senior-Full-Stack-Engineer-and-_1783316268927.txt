@@ -1,0 +1,66 @@
+# Role & Context
+You are a Senior Full-Stack Engineer and DevOps Specialist. Your objective is to implement a complete, production-ready, premium brand asset pipeline across our cross-platform monorepo, clean up all pending architectural gaps (Auth, Database, Workflows), and deploy the end-to-end system. No placeholders, no `// TODO` blocks, and no truncated scripts. Ship clean, production-grade, reusable code.
+
+---
+
+## TASK 1: AUTOMATED BRAND ASSET PIPELINE (CROSS-PLATFORM)
+
+Download the master brand logo from this URL:
+https://www.gsgroups.net/gslogo.png
+
+Write a completely automated Node.js automation script (`scripts/generate-brand-assets.js`) using the `sharp` library. The script must programmatically fetch this image, handle transparency masking where required, generate the exact multi-resolution binaries, and write them directly to the specified file trees.
+
+### 1. Web Platform & PWA Assets
+- Target Directory: `frontend/public/` or `public/`
+- Generate and write:
+  * `favicon.ico` (Multi-resolution: 16x16, 32x32, and 48x48 embedded in a single ICO file)
+  * `favicon-16x16.png` & `favicon-32x32.png`
+  * `apple-touch-icon.png` (180x180, unmasked, flat solid background layer added)
+  * `android-chrome-192x192.png` & `android-chrome-512x512.png`
+- Action: Update `index.html` or your root layout/meta definition files to explicitly link these generated premium brand assets.
+
+### 2. Electron Desktop Platform
+- Target Directory: `electron/assets/` or `desktop/build/`
+- Generate and write:
+  * `icon.icns` (Apple Desktop Format - packing layers up to 1024x1024)
+  * `icon.ico` (Windows Desktop Format - packing layers up to 256x256)
+  * `icon.png` (Linux Desktop Format - 512x512)
+
+### 3. Mobile Platforms (iOS & Android Mipmaps)
+- Target Directories: `mobile/ios/` and `mobile/android/` (or your active Capacitor/React Native resource folders)
+- iOS (`AppIcon.appiconset`): Generate clean, standard crisp sizes required by Xcode: 20x20, 29x29, 40x40, 58x58, 60x60, 76x76, 80x80, 87x87, 120x120, 152x152, 167x167, 180x180, and 1024x1024. Ensure zero alpha channel/transparency for final iOS App Store build compliance.
+- Android (`mipmap-*` paths): Generate legacy launcher icons (`ic_launcher.png`) and adaptive foreground split layers (`ic_launcher_foreground.png` overlaid over a clean vector/solid background) across all target densities: mdpi (48x48), hdpi (72x72), xhdpi (96x96), xxhdpi (144x144), xxxhdpi (192x192).
+
+### 4. Optimized In-App Brand UI Assets
+- Target Directory: Your core UI components assets directory.
+- Action: Optimize the master PNG into a highly compressed, web-ready `logo.png` optimized for high-density displays, and use it inside the Workspace Navigation Navbar and Login Screen layout shells.
+
+---
+
+## TASK 2: ARCHITECTURAL COMPLETION & PRODUCTION GAPS
+
+### 1. Robust Authentication & Layout Synchronization
+- Implement complete Auth workflows protecting the application state.
+- Create asymmetric Split-Panel ("Left & Right") Auth Shells for Login/Signup screens: One side containing a clean, premium marketing layout displaying the newly optimized brand logo and product values, and the other side rendering the clean input forms.
+
+### 2. Database Migration to Supabase Cloud
+- Check the current local relational database schema or migrations.
+- Write a unified, production-ready PostgreSQL migration script (`supabase/migrations/migration_main.sql`) that reflects the total required database schema.
+- Wire up the application backend environment configurations to point to the Supabase Cloud instance. Ensure connection pooling and SSL configurations are explicitly set up for enterprise durability.
+
+### 3. Reusable UI Components & Production Workflows
+- Refactor messy layout elements into fully modular, decoupled, and strictly typed reusable UI components.
+- Ensure all business workflows, state engines, and asynchronous backend worker functions are completely implemented and integrated into the frontend views.
+
+---
+
+## EXECUTABLE RUNBOOK FOR AGENT
+
+1. **Dependency Verification:** Check if `sharp` or an equivalent image processing library is present in `package.json`. If not, run the shell command to install it.
+2. **Execute Asset Pipeline:** Create, verify, and run `scripts/generate-brand-assets.js`. Ensure all destination folders are recursively created (`fs.mkdirSync` with `recursive: true`) before writing images.
+3. **Database Setup:** Connect to Supabase and execute the structural schema migrations.
+4. **Git Operations:** Stage all updated files, commit cleanly with message `"feat: automated premium brand asset pipeline and production infra migration"`, and push the branch directly to the remote GitHub repository main branch.
+5. **Vercel Deployment:** Run the production Vercel build and deployment pipeline via CLI or Git hooks.
+6. **Final Report:** Output a scannable file tree verification checklist showcasing where every asset was written, along with your live, production Vercel deployment URLs.
+
+Proceed immediately. Do not ask for confirmation; build and ship.
